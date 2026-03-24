@@ -1,3 +1,39 @@
+:root {
+    /* Layout */
+    --calc-width: 22.5rem; /* 360px */
+    --radius: 0.5rem;
+
+    /* Spacing scale (4px system) */
+    --space-xs: 0.25rem;  /* 4px */
+    --space-sm: 0.5rem;   /* 8px */
+    --space-md: 0.75rem;  /* 12px */
+    --space-lg: 1rem;     /* 16px */
+    --space-xl: 1.25rem;  /* 20px */
+
+    /* Font */
+    --font-base: 1rem;
+    --font-lg: 1.25rem;
+    --font-xl: 2.5rem;
+
+    /* Colors */
+    --body-bg: black;
+    --bg: #f3f3f3;
+    --text: #111;
+    --muted: #666;
+    --border: #ddd;
+
+    --btn-bg: #e6e6e6;
+    --btn-hover: #dcdcdc;
+    --btn-light: #ffffff;
+
+    --dropdown-bg: #ffffff;
+    --dropdown-btn: #f0f0f0;
+
+    --primary: #4da6ff;
+    --primary-hover: #3399ff;
+}
+
+/* Reset */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -6,19 +42,198 @@
 }
 
 body {
-    background: #111;
+    background: var(--body-bg);
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
 }
 
 /* Calculator */
 .calculator {
-    width: 360px;
-    background: #1e1e1e;
-    color: #fff;
-    border-radius: 10px;
-    padding: 10px;
+    width: var(--calc-width);
+    background: var(--bg);
+    color: var(--text);
+    border-radius: var(--radius);
+    padding: var(--space-sm);
     position: relative;
+}
+
+/* Top bar */
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.left {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.app-icon {
+    width: 1.25rem;
+}
+
+.title {
+    font-size: var(--font-lg);
+    font-weight: 500;
+}
+
+/* Icon button */
+.icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: var(--space-xs);
+    border-radius: var(--radius);
+}
+
+.icon-btn img {
+    width: 1.125rem;
+    opacity: 0.7;
+}
+
+.icon-btn:hover {
+    background: var(--btn-hover);
+}
+
+/* Display */
+.display {
+    text-align: right;
+    margin: var(--space-xl) 0;
+}
+
+.result {
+    font-size: var(--font-xl);
+}
+
+/* Mode */
+.mode-row {
+    display: flex;
+    gap: var(--space-lg);
+    color: var(--muted);
+}
+
+/* Memory */
+.memory-row {
+    display: flex;
+    justify-content: space-between;
+    margin: var(--space-sm) 0;
+}
+
+.memory-row button,
+.mode-row button {
+    background: none;
+    border: none;
+    color: var(--muted);
+}
+
+/* Function tabs */
+.function-tabs {
+    display: flex;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-sm);
+}
+
+.dropdown {
+    position: relative;
+}
+
+.dropdown-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    background: var(--btn-bg);
+    border: none;
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius);
+    color: #333;
+    cursor: pointer;
+}
+
+.dropdown-btn:hover {
+    background: var(--btn-hover);
+}
+
+.dropdown-btn img {
+    width: 0.875rem;
+}
+
+.arrow {
+    opacity: 0.6;
+}
+
+/* Dropdown */
+.dropdown-content {
+    position: absolute;
+    top: calc(100% + var(--space-xs));
+    background: var(--dropdown-bg);
+    padding: var(--space-sm);
+    border-radius: var(--radius);
+    display: none;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-xs);
+    z-index: 10;
+    box-shadow: 0 0.25rem 0.625rem rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-content.small {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.dropdown:hover .dropdown-content {
+    display: grid;
+}
+
+.dropdown-content button {
+    background: var(--dropdown-btn);
+    border: none;
+    padding: var(--space-sm);
+    border-radius: var(--radius);
+    color: var(--text);
+}
+
+.dropdown-content button:hover {
+    background: var(--btn-hover);
+}
+
+/* Buttons grid */
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--space-xs);
+}
+
+button {
+    padding: var(--space-sm);
+    background: var(--btn-bg);
+    border: none;
+    border-radius: var(--radius);
+    color: var(--text);
+    cursor: pointer;
+}
+
+.primary-btn {
+    background-color: var(--btn-light);
+    font-weight: 600;
+}
+
+button img {
+    width: 1rem;
+}
+
+button:hover {
+    background: var(--btn-hover);
+}
+
+/* Equals */
+.equals {
+    background: var(--primary);
+    color: white;
+}
+
+.equals:hover {
+    background: var(--primary-hover);
 }
