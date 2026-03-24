@@ -1,0 +1,24 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #111;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Calculator */
+.calculator {
+    width: 360px;
+    background: #1e1e1e;
+    color: #fff;
+    border-radius: 10px;
+    padding: 10px;
+    position: relative;
+}
