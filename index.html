@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Scientific Calculator - A scientific calculator is a specialized website for performing complex mathematical, statistical, and scientific calculations.">
+    <meta name="keywords" content="Scientific, Calculator, Mathematical, Statistical">
+
+    <!-- Facebook Meta Tags -->
+    <meta property="og:url" content="https://scientific-calculator-nu-peach.vercel.app/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Scientific Calculator">
+    <meta property="og:description"
+        content="Scientific Calculator - A scientific calculator is a specialized website for performing complex mathematical, statistical, and scientific calculations.">
+    <meta property="og:image" content="./assets/images/cover_image.png">
+
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="twitter:domain" content="scientific-calculator-nu-peach.vercel.app">
+    <meta property="twitter:url" content="https://scientific-calculator-nu-peach.vercel.app/">
+    <meta name="twitter:title" content="Scientific Calculator">
+    <meta name="twitter:description"
+        content="Scientific Calculator - A scientific calculator is a specialized website for performing complex mathematical, statistical, and scientific calculations.">
+    <meta name="twitter:image" content="./assets/images/cover_image.png">
+
+    <title>Scientific Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="./assets/icons/calculator-icon.svg">
+</head>
+
+<body>
+    <main>
+        <div class="calculator">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="left">
+                    <h3 class="title">Scientific</h3>
+                </div>
+
+                <button id="historyToggle" class="icon-btn" aria-label="Open history">
+                    <img src="./assets/icons/history-logo.svg" alt="">
+                </button>
+            </div>
+
+            <!-- Display -->
+            <div class="display">
+                <div class="result">0</div>
+            </div>
+
+            <!-- Mode -->
+            <div class="mode-row">
+                <button>DEG</button>
+                <button>F-E</button>
+            </div>
+
+            <!-- Memory -->
+            <div class="memory-row">
+                <button>MC</button>
+                <button>MR</button>
+                <button>M+</button>
+                <button>M-</button>
+                <button>MS</button>
+            </div>
+
+            <!-- Function Tabs -->
+            <div class="function-tabs">
+
+                <!-- Trigonometry -->
+                <div class="dropdown">
+                    <button class="dropdown-btn">
+                        <img src="./assets/icons/trigonometry.svg" aria-hidden="true" alt="">
+                        Trigonometry
+                        <img src="./assets/icons/drop-down.svg" class="arrow" alt="drop-down">
+                    </button>
+
+                    <div class="dropdown-content">
+                        <button>2ⁿᵈ</button>
+                        <button>sin</button>
+                        <button>cos</button>
+                        <button>tan</button>
+
+                        <button>hyp</button>
+                        <button>sec</button>
+                        <button>csc</button>
+                        <button>cot</button>
+                    </div>
+                </div>
+
+                <!-- Function -->
+                <div class="dropdown">
+                    <button class="dropdown-btn">
+                        <img src="./assets/icons/functions.svg" aria-hidden="true" alt="">
+                        Function
+                        <img src="./assets/icons/drop-down.svg" class="arrow" alt="drop-down">
+                    </button>
+
+                    <div class="dropdown-content small">
+                        <button>|x|</button>
+                        <button>⌊x⌋</button>
+                        <button>⌈x⌉</button>
+
+                        <button>rand</button>
+                        <button>→dms</button>
+                        <button>→deg</button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Buttons -->
+            <div class="buttons">
+
+                <button>2ⁿᵈ</button>
+                <button>π</button>
+                <button>e</button>
+                <button>C</button>
+                <button aria-label="Backspace">
+                    <img src="./assets/icons/backspace.svg" alt="backspace">
+                </button>
+
+                <button>x²</button>
+                <button>1/x</button>
+                <button>|x|</button>
+                <button>exp</button>
+                <button>mod</button>
+
+                <button>²√x</button>
+                <button>(</button>
+                <button>)</button>
+                <button>n!</button>
+                <button>÷</button>
+
+                <button>xʸ</button>
+                <button class="primary-btn">7</button>
+                <button class="primary-btn">8</button>
+                <button class="primary-btn">9</button>
+                <button>×</button>
+
+                <button>10ˣ</button>
+                <button class="primary-btn">4</button>
+                <button class="primary-btn">5</button>
+                <button class="primary-btn">6</button>
+                <button>−</button>
+
+                <button>log</button>
+                <button class="primary-btn">1</button>
+                <button class="primary-btn">2</button>
+                <button class="primary-btn">3</button>
+                <button>+</button>
+
+                <button>ln</button>
+                <button class="primary-btn">+/-</button>
+                <button class="primary-btn">0</button>
+                <button class="primary-btn">.</button>
+                <button class="equals">=</button>
+
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>
