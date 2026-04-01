@@ -122,6 +122,12 @@ body {
     text-align: right;
     line-height: 3rem;
     scroll-behavior: smooth;
+    scrollbar-width: none;
+    position: relative;
+}
+
+.result::-webkit-scrollbar {
+    display: none;
 }
 
 /* Mode */
@@ -291,9 +297,7 @@ button:hover {
     border: none;
     border-radius: var(--radius);
     font-size: 1.2rem;
-    width: 2rem;
-    height: 2rem;
-    padding: 0;
+    padding: var(--space-sm);
     cursor: pointer;
     display: flex;
     align-items: center;

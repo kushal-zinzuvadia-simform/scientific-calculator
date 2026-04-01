@@ -3,19 +3,19 @@ export class Expression {
         // Normalize operator symbols: × to *, ÷ to /
         expr = expr.replace(/×/g, "*").replace(/÷/g, "/");
         const tokens = expr.match(/(\d+\.?\d*|[+\-*/%()])/g);
-        
+
         // Process tokens to identify unary minus
         return this.processUnaryMinus(tokens);
     }
 
     processUnaryMinus(tokens) {
         if (!tokens) return tokens;
-        
+
         const processed = [];
         for (let i = 0; i < tokens.length; i++) {
             const token = tokens[i];
             const prevToken = i > 0 ? tokens[i - 1] : null;
-            
+
             // Check if "-" is unary: at start or after operator or opening paren
             if (token === "-" && (prevToken === null || "+-*/%(".includes(prevToken))) {
                 processed.push("u-"); // Mark as unary minus
@@ -23,7 +23,7 @@ export class Expression {
                 processed.push(token);
             }
         }
-        
+
         return processed;
     }
 }

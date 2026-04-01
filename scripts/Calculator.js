@@ -9,25 +9,29 @@ export class Calculator {
         this.history = new History();
     }
 
-    append(value) {
-        if (this.display.textContent === "0") {
-            this.display.textContent = value;
-        }
+    updateDisplay(text) {
+        this.display.textContent = text;
+    }
 
-        else {
-            this.display.textContent += value;
+    append(value) {
+        let currentText = this.display.textContent;
+        if (currentText === "0") {
+            this.updateDisplay(value);
+        } else {
+            this.updateDisplay(currentText + value);
         }
     }
 
     clear() {
-        this.display.textContent = "0";
+        this.updateDisplay("0");
     }
 
     delete() {
-        if (this.display.textContent.length == 1) {
-            this.display.textContent = "0";
+        let currentText = this.display.textContent;
+        if (currentText.length <= 1) {
+            this.updateDisplay("0");
         } else {
-            this.display.textContent = this.display.textContent.slice(0, -1);
+            this.updateDisplay(currentText.slice(0, -1));
         }
     }
 
@@ -46,17 +50,17 @@ export class Calculator {
 
     calculate() {
         try {
-            const input = this.display.textContent;
+            let input = this.display.textContent.trim();
             const result = this.expression.evaluate(input);
             const formattedResult = this.formatResult(result);
 
-            this.display.textContent = formattedResult;
+            this.updateDisplay(formattedResult);
 
             // Add to history
             this.history.add(input, formattedResult);
             this.updateHistoryPanel();
         } catch (err) {
-            this.display.textContent = "Error";
+            this.updateDisplay("Error");
         }
     }
 
@@ -78,6 +82,11 @@ export class Calculator {
                 <div class="history-expression">${item.expression}</div>
                 <div class="history-result">${item.result}</div>
             `;
+
+            historyItem.addEventListener('click', () => {
+                this.updateDisplay(item.expression);
+            });
+
             this.historyPanel.appendChild(historyItem);
         });
     }

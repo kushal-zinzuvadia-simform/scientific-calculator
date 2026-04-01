@@ -54,7 +54,7 @@ document.querySelectorAll("button").forEach(btn => {
 // Keyboard input support
 document.addEventListener("keydown", (e) => {
     const key = e.key;
-    
+
     // Handle modulo operator with %
     if (key === "%") {
         calculator.append("%");
@@ -115,7 +115,7 @@ document.addEventListener("keydown", (e) => {
 // Handle result scrolling with arrow keys
 function handleResultScroll(direction) {
     const scrollAmount = 30;
-    
+
     if (direction === "ArrowLeft") {
         display.scrollLeft -= scrollAmount;
     } else if (direction === "ArrowRight") {
