@@ -130,10 +130,8 @@ Expression.prototype.evaluatePostfix = function (postfix) {
 };
 
 Expression.prototype.evaluate = function (expr) {
-    console.log("Evaluating expression..." + expr);
     try {
         const tokens = this.tokenize(expr);
-        console.log("Tokenized expression..." + tokens);
         const postfix = this.toPostfix(tokens);
         return this.evaluatePostfix(postfix);
     } catch (err) {
