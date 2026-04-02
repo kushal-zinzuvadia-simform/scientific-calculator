@@ -33,7 +33,7 @@ Expression.prototype.precedence = function (op) {
         return 1;
     if (op === "*" || op === "/" || op === "%")
         return 2;
-    if (op === "u-") // Unary minus has highest precedence
+    if (op === "u-")
         return 3;
 
     return 0;
@@ -89,7 +89,7 @@ Expression.prototype.evaluatePostfix = function (postfix) {
         }
 
         else if (token === "u-") {
-            // Unary minus - negate the top operand
+            // negate the top operand
             const a = stack.pop();
             stack.push(-a);
         }

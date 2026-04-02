@@ -8,7 +8,6 @@ const clearHistoryBtn = document.getElementById("clearHistory");
 
 const calculator = new Calculator(display, historyPanel);
 
-// Initialize history panel
 calculator.updateHistoryPanel();
 
 // Make display focusable
@@ -33,7 +32,7 @@ clearHistoryBtn.addEventListener("click", (e) => {
 // Button click handlers
 document.querySelectorAll("button").forEach(btn => {
     btn.addEventListener("click", () => {
-        const value = btn.innerText;
+        let value = btn.innerText;
 
         if (value === "=") {
             calculator.calculate();
@@ -44,8 +43,11 @@ document.querySelectorAll("button").forEach(btn => {
         } else if (btn.getAttribute("aria-label") === "Backspace") {
             calculator.delete();
         } else if (btn.id === "historyToggle" || btn.id === "clearHistory") {
-            // Ignore these buttons as they have their own handlers
+            // Ignore these buttons
         } else {
+            if (value === "mod") {
+                value = "%";
+            }
             calculator.append(value);
         }
     });
@@ -62,17 +64,16 @@ document.addEventListener("keydown", (e) => {
         return;
     }
 
-    // Numeric input
     if (key >= "0" && key <= "9") {
         calculator.append(key);
         e.preventDefault();
     }
-    // Decimal point
+
     else if (key === ".") {
         calculator.append(".");
         e.preventDefault();
     }
-    // Basic operators
+
     else if (key === "+") {
         calculator.append("+");
         e.preventDefault();
@@ -89,18 +90,18 @@ document.addEventListener("keydown", (e) => {
         calculator.append("/");
         e.preventDefault();
     }
-    // Equals
+
     else if (key === "Enter" || key === "=") {
         calculator.calculate();
         display.focus();
         e.preventDefault();
     }
-    // Clear
+
     else if (key === "Escape") {
         calculator.clear();
         e.preventDefault();
     }
-    // Backspace
+
     else if (key === "Backspace") {
         calculator.delete();
         e.preventDefault();
