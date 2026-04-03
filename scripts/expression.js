@@ -2,6 +2,10 @@ export class Expression {
     tokenize(expr) {
         // Normalize operator symbols: × to *, ÷ to /
         expr = expr.replace(/×/g, "*").replace(/÷/g, "/");
+
+        // (\d+\.?\d*) match integers or decimals
+        //      |      OR
+        // [+\-*/%()]  match operators and parentheses
         const tokens = expr.match(/(\d+\.?\d*|[+\-*/%()])/g);
 
         // Process tokens to identify unary minus

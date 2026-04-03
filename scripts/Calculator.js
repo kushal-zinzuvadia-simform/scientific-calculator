@@ -68,20 +68,30 @@ export class Calculator {
         if (!this.historyPanel) return;
 
         const items = this.history.getAll();
-        this.historyPanel.innerHTML = '';
+        this.historyPanel.replaceChildren();
 
         if (items.length === 0) {
-            this.historyPanel.innerHTML = '<div class="history-empty">History is empty</div>';
+            const emptyDiv = document.createElement('div');
+            emptyDiv.className = 'history-empty';
+            emptyDiv.textContent = 'History is empty';
+            this.historyPanel.appendChild(emptyDiv);
             return;
         }
 
         items.forEach(item => {
             const historyItem = document.createElement('div');
             historyItem.className = 'history-item';
-            historyItem.innerHTML = `
-                <div class="history-expression">${item.expression}</div>
-                <div class="history-result">${item.result}</div>
-            `;
+
+            const expressionDiv = document.createElement('div');
+            expressionDiv.className = 'history-expression';
+            expressionDiv.textContent = item.expression;
+
+            const resultDiv = document.createElement('div');
+            resultDiv.className = 'history-result';
+            resultDiv.textContent = item.result;
+
+            historyItem.appendChild(expressionDiv);
+            historyItem.appendChild(resultDiv);
 
             historyItem.addEventListener('click', () => {
                 this.updateDisplay(item.expression);
