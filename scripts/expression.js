@@ -1,5 +1,11 @@
 export class Expression {
     tokenize(expr) {
+        // Check for multiple decimal points in a single number (e.g., 1.2.3)
+        // digits, dot, digits, dot = invalid
+        if (/\d+\.\d*\./.test(expr)) {
+            throw new Error("Invalid expression: multiple decimal points in number");
+        }
+
         // Normalize operator symbols: × to *, ÷ to /
         expr = expr.replace(/×/g, "*").replace(/÷/g, "/");
 
@@ -15,10 +21,38 @@ export class Expression {
     processUnaryMinus(tokens) {
         if (!tokens) return tokens;
 
-        const processed = [];
+        // handle implicit multiplication
+        const withImplicitMult = [];
         for (let i = 0; i < tokens.length; i++) {
             const token = tokens[i];
-            const prevToken = i > 0 ? tokens[i - 1] : null;
+            const nextToken = i < tokens.length - 1 ? tokens[i + 1] : null;
+
+            withImplicitMult.push(token);
+
+            // Add implicit multiplication (*) when:
+            // 1. 9(
+            // 2. )(
+            // 3. )9
+            if (nextToken) {
+                const isCurrentNumOrClose = !isNaN(token) || token === ")";
+                const isNextOpenOrNum = token === "(" || !isNaN(nextToken);
+                const isNextOpen = nextToken === "(";
+
+                if (isCurrentNumOrClose && (isNextOpen || isNextOpenOrNum)) {
+                    if ((token === ")" && nextToken === "(") ||
+                        (!isNaN(token) && nextToken === "(") ||
+                        (token === ")" && !isNaN(nextToken))) {
+                        withImplicitMult.push("*");
+                    }
+                }
+            }
+        }
+
+        // handle unary minus
+        const processed = [];
+        for (let i = 0; i < withImplicitMult.length; i++) {
+            const token = withImplicitMult[i];
+            const prevToken = i > 0 ? withImplicitMult[i - 1] : null;
 
             // Check if "-" is unary: at start or after operator or opening paren
             if (token === "-" && (prevToken === null || "+-*/%(".includes(prevToken))) {
@@ -77,9 +111,20 @@ Expression.prototype.toPostfix = function (tokens) {
             while (stack.length && stack.at(-1) !== "(") {
                 output.push(stack.pop());
             }
-            stack.pop();
+
+            // Check if opening parenthesis exists
+            if (stack.length === 0) {
+                throw new Error("Invalid expression: missing opening parenthesis");
+            }
+
+            stack.pop(); // Remove the matched "("
         }
     });
+
+    // Check for unmatched opening parentheses
+    if (stack.some(token => token === "(")) {
+        throw new Error("Invalid expression: unmatched opening parenthesis");
+    }
 
     return output.concat(stack.reverse());
 };
