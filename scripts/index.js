@@ -57,6 +57,12 @@ document.querySelectorAll("button").forEach(btn => {
 document.addEventListener("keydown", (e) => {
     const key = e.key;
 
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+
+    if (e.target instanceof HTMLButtonElement || e.target.closest("button")) {
+        return;
+    }
+
     // Handle modulo operator with %
     if (key === "%") {
         calculator.append("%");

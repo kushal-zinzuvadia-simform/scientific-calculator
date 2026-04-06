@@ -7,23 +7,34 @@ export class Calculator {
         this.historyPanel = historyPanel;
         this.expression = new Expression();
         this.history = new History();
+        this.justCalculated = false;
     }
 
     updateDisplay(text) {
         this.display.textContent = text;
     }
 
+    isStartOfNewEntry(value) {
+        return /^[0-9.]$/.test(value) || value === "π" || value === "e";
+    }
+
     append(value) {
         let currentText = this.display.textContent;
-        if (currentText === "0") {
+
+        if (this.justCalculated && this.isStartOfNewEntry(value)) {
+            this.updateDisplay(value);
+        } else if (currentText === "0") {
             this.updateDisplay(value);
         } else {
             this.updateDisplay(currentText + value);
         }
+
+        this.justCalculated = false;
     }
 
     clear() {
         this.updateDisplay("0");
+        this.justCalculated = false;
     }
 
     delete() {
@@ -55,12 +66,14 @@ export class Calculator {
             const formattedResult = this.formatResult(result);
 
             this.updateDisplay(formattedResult);
+            this.justCalculated = true;
 
             // Add to history
             this.history.add(input, formattedResult);
             this.updateHistoryPanel();
         } catch (err) {
             this.updateDisplay("Error");
+            this.justCalculated = false;
         }
     }
 
