@@ -33,28 +33,29 @@ clearHistoryBtn.addEventListener("click", (e) => {
     }
 });
 
-// Button click handlers
-document.querySelectorAll("button").forEach(btn => {
-    btn.addEventListener("click", () => {
-        let value = btn.innerText;
+document.body.addEventListener("click", (e) => {
+    const btn = e.target.closest("button");
+    if (!btn) return;
 
-        if (value === "=") {
-            calculator.calculate();
-            // Focus on display after calculation for arrow key scrolling
-            display.focus();
-        } else if (value === "C") {
-            calculator.clear();
-        } else if (btn.getAttribute("aria-label") === "Backspace") {
-            calculator.delete();
-        } else if (btn.id === "historyToggle" || btn.id === "clearHistory") {
-            // Ignore these buttons
-        } else {
-            if (value === "mod") {
-                value = "%";
-            }
-            calculator.append(value);
+    if (btn.id === "historyToggle" || btn.id === "clearHistory") {
+        return;
+    }
+
+    let value = btn.innerText;
+
+    if (value === "=") {
+        calculator.calculate();
+        display.focus();
+    } else if (value === "C") {
+        calculator.clear();
+    } else if (btn.getAttribute("aria-label") === "Backspace") {
+        calculator.delete();
+    } else {
+        if (value === "mod") {
+            value = "%";
         }
-    });
+        calculator.append(value);
+    }
 });
 
 // Keyboard input support

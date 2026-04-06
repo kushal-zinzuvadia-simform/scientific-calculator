@@ -31,11 +31,20 @@ export class History {
     }
 
     saveToStorage() {
-        localStorage.setItem('calculatorHistory', JSON.stringify(this.items));
+        try {
+            localStorage.setItem('calculatorHistory', JSON.stringify(this.items));
+        } catch (error) {
+            console.warn('Unable to save calculator history to localStorage.', error);
+        }
     }
 
     loadFromStorage() {
-        const saved = localStorage.getItem('calculatorHistory');
-        return saved ? JSON.parse(saved) : [];
+        try {
+            const saved = localStorage.getItem('calculatorHistory');
+            return saved ? JSON.parse(saved) : [];
+        } catch (error) {
+            console.warn('Unable to load calculator history from localStorage.', error);
+            return [];
+        }
     }
 }

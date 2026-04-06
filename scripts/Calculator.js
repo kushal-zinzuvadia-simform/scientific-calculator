@@ -20,11 +20,19 @@ export class Calculator {
         return /^[0-9.]$/.test(value) || value === "π" || value === "e";
     }
 
+    isOperator(value) {
+        return ["+", "-", "×", "÷", "%"].includes(value);
+    }
+
     append(value) {
         let currentText = this.display.textContent;
 
         if (this.justCalculated && this.isStartOfNewEntry(value)) {
             this.updateDisplay(value);
+        } else if (currentText === "0" && value === ".") {
+            this.updateDisplay("0.");
+        } else if (currentText === "0" && this.isOperator(value)) {
+            this.updateDisplay(`0${value}`);
         } else if (currentText === "0") {
             this.updateDisplay(value);
         } else {
