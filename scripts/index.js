@@ -1,4 +1,8 @@
+'use strict'
+
 import { Calculator } from "./Calculator.js";
+
+const scrollAmount = 30;
 
 const display = document.getElementById("result-display");
 const historyPanel = document.getElementById("history-items");
@@ -121,7 +125,6 @@ document.addEventListener("keydown", (e) => {
 
 // Handle result scrolling with arrow keys
 function handleResultScroll(direction) {
-    const scrollAmount = 30;
 
     if (direction === "ArrowLeft") {
         display.scrollLeft -= scrollAmount;

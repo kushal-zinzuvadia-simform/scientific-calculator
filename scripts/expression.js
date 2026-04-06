@@ -1,3 +1,5 @@
+'use strict'
+
 export class Expression {
     tokenize(expr) {
         // Check for multiple decimal points in a single number (e.g., 1.2.3)

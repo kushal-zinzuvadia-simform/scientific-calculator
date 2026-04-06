@@ -1,3 +1,5 @@
+'use strict'
+
 export class History {
     constructor(maxSize = 50) {
         this.maxSize = maxSize;

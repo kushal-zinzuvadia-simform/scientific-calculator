@@ -1,3 +1,5 @@
+'use strict'
+
 import { Expression } from "./expression.js";
 import { History } from "./History.js";
 
