@@ -50,6 +50,28 @@ document.body.addEventListener("click", (e) => {
         calculator.clear();
     } else if (btn.getAttribute("aria-label") === "Backspace") {
         calculator.delete();
+    } else if (value === "x²") {
+        calculator.applySquare();
+    } else if (value === "xʸ") {
+        calculator.applyPower();
+    } else if (value === "10ˣ") {
+        calculator.applyTenPower();
+    } else if (value === "1/x") {
+        calculator.applyReciprocal();
+    } else if (value === "|x|") {
+        calculator.applyAbsolute();
+    } else if (value === "²√x") {
+        calculator.applySquareRoot();
+    } else if (value === "n!") {
+        calculator.applyFactorial();
+    } else if (value === "log") {
+        calculator.applyLog10();
+    } else if (value === "ln") {
+        calculator.applyLn();
+    } else if (value === "exp") {
+        calculator.applyExp();
+    } else if (value === "+/-") {
+        calculator.applyNegate();
     } else {
         if (value === "mod") {
             value = "%";
