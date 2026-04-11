@@ -26,11 +26,7 @@ historyToggleBtn.addEventListener("click", () => {
 // Clear history
 clearHistoryBtn.addEventListener("click", (e) => {
     e.stopPropagation();
-    if (calculator.history.getAll().length === 0) {
-        alert("History is empty");
-    } else if (confirm("Are you sure you want to clear history?")) {
-        calculator.clearHistory();
-    }
+    calculator.clearHistory();
 });
 
 document.body.addEventListener("click", (e) => {
@@ -85,10 +81,6 @@ document.addEventListener("keydown", (e) => {
     const key = e.key;
 
     if (e.ctrlKey || e.metaKey || e.altKey) return;
-
-    if (e.target instanceof HTMLButtonElement || e.target.closest("button")) {
-        return;
-    }
 
     // Handle modulo operator with %
     if (key === "%") {
