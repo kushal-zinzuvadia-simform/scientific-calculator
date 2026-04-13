@@ -25,7 +25,6 @@ export class Calculator {
         return ["+", "-", "×", "÷", "%"].includes(value);
     }
 
-    // If the display is in error state, reset to 0.
     clearIfError() {
         if (this.hasError) {
             this.updateDisplay("0");
@@ -37,7 +36,6 @@ export class Calculator {
     }
 
     append(value) {
-        // After an error, any input starts a new expression
         if (this.hasError) {
             this.clearIfError();
             // For operators after error: start with "0"
@@ -231,7 +229,6 @@ export class Calculator {
         this.justCalculated = false;
     }
 
-    // |x|
     applyAbsolute() {
         if (this.hasError) return;
         try {
@@ -313,6 +310,146 @@ export class Calculator {
         this.justCalculated = false;
     }
 
+    applyCube() {
+        if (this.hasError) return;
+        const expr = this.display.textContent;
+        this.updateDisplay(expr + "^3");
+        this.justCalculated = false;
+    }
+
+    applyCubeRoot() {
+        if (this.hasError) return;
+        try {
+            const currentValue = this.evaluateCurrentExpression();
+            const result = Math.cbrt(currentValue);
+            this.updateDisplay(this.formatResult(result));
+            this.justCalculated = true;
+        } catch {
+            this.updateDisplay("Invalid expression");
+            this.hasError = true;
+        }
+    }
+
+    applyTwoPower() {
+        if (this.hasError) return;
+        try {
+            const currentValue = this.evaluateCurrentExpression();
+            const result = Math.pow(2, currentValue);
+            if (!isFinite(result)) {
+                this.updateDisplay("Invalid expression");
+                this.hasError = true;
+                return;
+            }
+            this.updateDisplay(this.formatResult(result));
+            this.justCalculated = true;
+        } catch {
+            this.updateDisplay("Invalid expression");
+            this.hasError = true;
+        }
+    }
+
+    toRadians(deg) {
+        return deg * (Math.PI / 180);
+    }
+
+    toDegrees(rad) {
+        return rad * (180 / Math.PI);
+    }
+
+    applySin() {
+        if (this.hasError) return;
+        try {
+            const currentValue = this.evaluateCurrentExpression();
+            const result = Math.sin(this.toRadians(currentValue));
+            this.updateDisplay(this.formatResult(result));
+            this.justCalculated = true;
+        } catch {
+            this.updateDisplay("Invalid expression");
+            this.hasError = true;
+        }
+    }
+
+    applyCos() {
+        if (this.hasError) return;
+        try {
+            const currentValue = this.evaluateCurrentExpression();
+            const result = Math.cos(this.toRadians(currentValue));
+            this.updateDisplay(this.formatResult(result));
+            this.justCalculated = true;
+        } catch {
+            this.updateDisplay("Invalid expression");
+            this.hasError = true;
+        }
+    }
+
+    applyTan() {
+        if (this.hasError) return;
+        try {
+            const currentValue = this.evaluateCurrentExpression();
+            // tan(90), tan(270) etc. are undefined
+            if (currentValue % 180 === 90) {
+                this.updateDisplay("Invalid expression");
+                this.hasError = true;
+                return;
+            }
+            const result = Math.tan(this.toRadians(currentValue));
+            this.updateDisplay(this.formatResult(result));
+            this.justCalculated = true;
+        } catch {
+            this.updateDisplay("Invalid expression");
+            this.hasError = true;
+        }
+    }
+
+    applyAsin() {
+        if (this.hasError) return;
+        try {
+            const currentValue = this.evaluateCurrentExpression();
+            if (currentValue < -1 || currentValue > 1) {
+                this.updateDisplay("Invalid expression");
+                this.hasError = true;
+                return;
+            }
+            const result = this.toDegrees(Math.asin(currentValue));
+            this.updateDisplay(this.formatResult(result));
+            this.justCalculated = true;
+        } catch {
+            this.updateDisplay("Invalid expression");
+            this.hasError = true;
+        }
+    }
+
+    applyAcos() {
+        if (this.hasError) return;
+        try {
+            const currentValue = this.evaluateCurrentExpression();
+            if (currentValue < -1 || currentValue > 1) {
+                this.updateDisplay("Invalid expression");
+                this.hasError = true;
+                return;
+            }
+            const result = this.toDegrees(Math.acos(currentValue));
+            this.updateDisplay(this.formatResult(result));
+            this.justCalculated = true;
+        } catch {
+            this.updateDisplay("Invalid expression");
+            this.hasError = true;
+        }
+    }
+
+    applyAtan() {
+        if (this.hasError) return;
+        try {
+            const currentValue = this.evaluateCurrentExpression();
+            const result = this.toDegrees(Math.atan(currentValue));
+            this.updateDisplay(this.formatResult(result));
+            this.justCalculated = true;
+        } catch {
+            this.updateDisplay("Invalid expression");
+            this.hasError = true;
+        }
+    }
+
     // +/- 
     applyNegate() {
         if (this.hasError) {
@@ -324,7 +461,7 @@ export class Calculator {
 
         const operatorChars = ['+', '-', '×', '÷', '%', '(', '^'];
 
-        // Find the position where the last operand begins
+        // position where the last operand begins
         let i = expr.length - 1;
 
         // Skip trailing digits/dots
@@ -337,19 +474,19 @@ export class Calculator {
             const operand = expr.substring(i + 1);
 
             if (prefix === "" || prefix === "-") {
-                // Entire expression is a single number
+                // single number
                 if (expr.startsWith("-")) {
                     this.updateDisplay(expr.substring(1));
                 } else {
                     this.updateDisplay("-" + expr);
                 }
             } else if (prefix.endsWith("(-")) {
-                // operand is already negated inside parens
+                // operand is already negated 
                 this.updateDisplay(prefix.slice(0, -1) + operand);
             } else if (prefix.endsWith("(")) {
                 this.updateDisplay(prefix + "-" + operand);
             } else if (prefix.endsWith("-")) {
-                // Check if binary minus 
+                // binary minus 
                 const beforeMinus = prefix.length >= 2 ? prefix[prefix.length - 2] : null;
                 if (beforeMinus && /[0-9)πe]/.test(beforeMinus)) {
                     this.updateDisplay(prefix + "(-" + operand + ")");
@@ -366,6 +503,52 @@ export class Calculator {
             } else {
                 this.updateDisplay("-(" + expr + ")");
             }
+        }
+    }
+
+    applyFloor() {
+        if (this.hasError) return;
+        try {
+            const currentValue = this.evaluateCurrentExpression();
+            const result = Math.floor(currentValue);
+            this.updateDisplay(this.formatResult(result));
+            this.justCalculated = true;
+        } catch {
+            this.updateDisplay("Invalid expression");
+            this.hasError = true;
+        }
+    }
+
+    applyCeil() {
+        if (this.hasError) return;
+        try {
+            const currentValue = this.evaluateCurrentExpression();
+            const result = Math.ceil(currentValue);
+            this.updateDisplay(this.formatResult(result));
+            this.justCalculated = true;
+        } catch {
+            this.updateDisplay("Invalid expression");
+            this.hasError = true;
+        }
+    }
+
+    applyRand() {
+        const result = Math.random();
+        this.updateDisplay(this.formatResult(result));
+        this.justCalculated = true;
+        this.hasError = false;
+    }
+
+    applyRound() {
+        if (this.hasError) return;
+        try {
+            const currentValue = this.evaluateCurrentExpression();
+            const result = Math.round(currentValue);
+            this.updateDisplay(this.formatResult(result));
+            this.justCalculated = true;
+        } catch {
+            this.updateDisplay("Invalid expression");
+            this.hasError = true;
         }
     }
 }

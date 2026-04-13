@@ -69,42 +69,35 @@
                 <div class="function-tabs">
 
                     <!-- Trigonometry -->
-                    <div class="dropdown">
-                        <button class="dropdown-btn">
+                    <div class="dropdown" id="trig-dropdown">
+                        <button class="dropdown-btn" id="trig-dropdown-btn">
                             <img src="./assets/icons/trigonometry.svg" aria-hidden="true" alt="">
                             Trigonometry
                             <img src="./assets/icons/drop-down.svg" class="arrow" alt="drop-down">
                         </button>
 
-                        <div class="dropdown-content">
-                            <button>2ⁿᵈ</button>
-                            <button>sin</button>
-                            <button>cos</button>
-                            <button>tan</button>
-
-                            <button>hyp</button>
-                            <button>sec</button>
-                            <button>csc</button>
-                            <button>cot</button>
+                        <div class="dropdown-content" id="trig-dropdown-content">
+                            <button id="trig-2nd-btn">2ⁿᵈ</button>
+                            <button id="sin-btn">sin</button>
+                            <button id="cos-btn">cos</button>
+                            <button id="tan-btn">tan</button>
                         </div>
                     </div>
 
                     <!-- Function -->
-                    <div class="dropdown">
-                        <button class="dropdown-btn">
+                    <div class="dropdown" id="func-dropdown">
+                        <button class="dropdown-btn" id="func-dropdown-btn">
                             <img src="./assets/icons/functions.svg" aria-hidden="true" alt="">
                             Function
                             <img src="./assets/icons/drop-down.svg" class="arrow" alt="drop-down">
                         </button>
 
-                        <div class="dropdown-content small">
-                            <button>|x|</button>
+                        <div class="dropdown-content" id="func-dropdown-content">
                             <button>⌊x⌋</button>
                             <button>⌈x⌉</button>
 
                             <button>rand</button>
-                            <button>→dms</button>
-                            <button>→deg</button>
+                            <button>round</button>
                         </div>
                     </div>
 
@@ -113,7 +106,7 @@
                 <!-- Buttons -->
                 <div class="buttons">
 
-                    <button>2ⁿᵈ</button>
+                    <button id="outer-2nd-btn">2ⁿᵈ</button>
                     <button>π</button>
                     <button>e</button>
                     <button>C</button>
@@ -121,13 +114,13 @@
                         <img src="./assets/icons/backspace.svg" alt="backspace">
                     </button>
 
-                    <button>x²</button>
+                    <button id="square-btn">x²</button>
                     <button>1/x</button>
                     <button>|x|</button>
                     <button>exp</button>
                     <button>mod</button>
 
-                    <button>²√x</button>
+                    <button id="sqrt-btn">²√x</button>
                     <button>(</button>
                     <button>)</button>
                     <button>n!</button>
@@ -139,7 +132,7 @@
                     <button class="primary-btn">9</button>
                     <button>×</button>
 
-                    <button>10ˣ</button>
+                    <button id="power-btn">10ˣ</button>
                     <button class="primary-btn">4</button>
                     <button class="primary-btn">5</button>
                     <button class="primary-btn">6</button>

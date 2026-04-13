@@ -204,7 +204,7 @@ body {
     grid-template-columns: repeat(3, 1fr);
 }
 
-.dropdown:hover .dropdown-content {
+.dropdown-content.open {
     display: grid;
 }
 
@@ -218,6 +218,12 @@ body {
 
 .dropdown-content button:hover {
     background: var(--btn-hover);
+}
+
+/* Active 2nd button */
+.active-2nd {
+    background: var(--primary) !important;
+    color: white !important;
 }
 
 /* Buttons grid */
