@@ -184,38 +184,49 @@ export class Calculator {
         this.updateHistoryPanel();
     }
 
-    // Scientific functions
-
-    applySquare() {
-        if (this.hasError) return;
-        const expr = this.display.textContent;
-        this.updateDisplay(expr + "^2");
-        this.justCalculated = false;
-    }
-
-    applyPower() {
-        if (this.hasError) return;
-        const expr = this.display.textContent;
-        this.updateDisplay(expr + "^");
-        this.justCalculated = false;
-    }
-
-    applyTenPower() {
+    // Common function for unary operations that compute immediately
+    applyUnaryFunction(mathFunc, validator = null) {
         if (this.hasError) return;
         try {
             const currentValue = this.evaluateCurrentExpression();
-            const result = Math.pow(10, currentValue);
+            if (validator && !validator(currentValue)) {
+                this.updateDisplay("Invalid expression");
+                this.hasError = true;
+                return;
+            }
+
+            const result = mathFunc(currentValue);
             if (!isFinite(result)) {
                 this.updateDisplay("Invalid expression");
                 this.hasError = true;
                 return;
             }
+
             this.updateDisplay(this.formatResult(result));
             this.justCalculated = true;
         } catch {
             this.updateDisplay("Invalid expression");
             this.hasError = true;
         }
+    }
+
+    appendToExpression(suffix) {
+        if (this.hasError) return;
+        const expr = this.display.textContent;
+        this.updateDisplay(expr + suffix);
+        this.justCalculated = false;
+    }
+
+    applySquare() {
+        this.appendToExpression("^2");
+    }
+
+    applyPower() {
+        this.appendToExpression("^");
+    }
+
+    applyTenPower() {
+        this.applyUnaryFunction((x) => Math.pow(10, x));
     }
 
     applyReciprocal() {
@@ -230,122 +241,39 @@ export class Calculator {
     }
 
     applyAbsolute() {
-        if (this.hasError) return;
-        try {
-            const currentValue = this.evaluateCurrentExpression();
-            const result = Math.abs(currentValue);
-            this.updateDisplay(this.formatResult(result));
-            this.justCalculated = true;
-        } catch {
-            this.updateDisplay("Invalid expression");
-            this.hasError = true;
-        }
+        this.applyUnaryFunction(Math.abs);
     }
 
     applySquareRoot() {
-        if (this.hasError) return;
-        try {
-            const currentValue = this.evaluateCurrentExpression();
-            if (currentValue < 0) {
-                this.updateDisplay("Invalid expression");
-                this.hasError = true;
-                return;
-            }
-            const result = Math.sqrt(currentValue);
-            this.updateDisplay(this.formatResult(result));
-            this.justCalculated = true;
-        } catch {
-            this.updateDisplay("Invalid expression");
-            this.hasError = true;
-        }
+        this.applyUnaryFunction(Math.sqrt, (x) => x >= 0);
     }
 
     applyFactorial() {
-        if (this.hasError) return;
-        const expr = this.display.textContent;
-        this.updateDisplay(expr + "!");
-        this.justCalculated = false;
+        this.appendToExpression("!");
     }
 
     applyLog10() {
-        if (this.hasError) return;
-        try {
-            const currentValue = this.evaluateCurrentExpression();
-            if (currentValue <= 0) {
-                this.updateDisplay("Invalid expression");
-                this.hasError = true;
-                return;
-            }
-            const result = Math.log10(currentValue);
-            this.updateDisplay(this.formatResult(result));
-            this.justCalculated = true;
-        } catch {
-            this.updateDisplay("Invalid expression");
-            this.hasError = true;
-        }
+        this.applyUnaryFunction(Math.log10, (x) => x > 0);
     }
 
     applyLn() {
-        if (this.hasError) return;
-        try {
-            const currentValue = this.evaluateCurrentExpression();
-            if (currentValue <= 0) {
-                this.updateDisplay("Invalid expression");
-                this.hasError = true;
-                return;
-            }
-            const result = Math.log(currentValue);
-            this.updateDisplay(this.formatResult(result));
-            this.justCalculated = true;
-        } catch {
-            this.updateDisplay("Invalid expression");
-            this.hasError = true;
-        }
+        this.applyUnaryFunction(Math.log, (x) => x > 0);
     }
 
     applyExp() {
-        if (this.hasError) return;
-        const expr = this.display.textContent;
-        this.updateDisplay(expr + "^");
-        this.justCalculated = false;
+        this.appendToExpression("^");
     }
 
     applyCube() {
-        if (this.hasError) return;
-        const expr = this.display.textContent;
-        this.updateDisplay(expr + "^3");
-        this.justCalculated = false;
+        this.appendToExpression("^3");
     }
 
     applyCubeRoot() {
-        if (this.hasError) return;
-        try {
-            const currentValue = this.evaluateCurrentExpression();
-            const result = Math.cbrt(currentValue);
-            this.updateDisplay(this.formatResult(result));
-            this.justCalculated = true;
-        } catch {
-            this.updateDisplay("Invalid expression");
-            this.hasError = true;
-        }
+        this.applyUnaryFunction(Math.cbrt);
     }
 
     applyTwoPower() {
-        if (this.hasError) return;
-        try {
-            const currentValue = this.evaluateCurrentExpression();
-            const result = Math.pow(2, currentValue);
-            if (!isFinite(result)) {
-                this.updateDisplay("Invalid expression");
-                this.hasError = true;
-                return;
-            }
-            this.updateDisplay(this.formatResult(result));
-            this.justCalculated = true;
-        } catch {
-            this.updateDisplay("Invalid expression");
-            this.hasError = true;
-        }
+        this.applyUnaryFunction((x) => Math.pow(2, x));
     }
 
     toRadians(deg) {
@@ -357,97 +285,27 @@ export class Calculator {
     }
 
     applySin() {
-        if (this.hasError) return;
-        try {
-            const currentValue = this.evaluateCurrentExpression();
-            const result = Math.sin(this.toRadians(currentValue));
-            this.updateDisplay(this.formatResult(result));
-            this.justCalculated = true;
-        } catch {
-            this.updateDisplay("Invalid expression");
-            this.hasError = true;
-        }
+        this.applyUnaryFunction((x) => Math.sin(this.toRadians(x)));
     }
 
     applyCos() {
-        if (this.hasError) return;
-        try {
-            const currentValue = this.evaluateCurrentExpression();
-            const result = Math.cos(this.toRadians(currentValue));
-            this.updateDisplay(this.formatResult(result));
-            this.justCalculated = true;
-        } catch {
-            this.updateDisplay("Invalid expression");
-            this.hasError = true;
-        }
+        this.applyUnaryFunction((x) => Math.cos(this.toRadians(x)));
     }
 
     applyTan() {
-        if (this.hasError) return;
-        try {
-            const currentValue = this.evaluateCurrentExpression();
-            // tan(90), tan(270) etc. are undefined
-            if (currentValue % 180 === 90) {
-                this.updateDisplay("Invalid expression");
-                this.hasError = true;
-                return;
-            }
-            const result = Math.tan(this.toRadians(currentValue));
-            this.updateDisplay(this.formatResult(result));
-            this.justCalculated = true;
-        } catch {
-            this.updateDisplay("Invalid expression");
-            this.hasError = true;
-        }
+        this.applyUnaryFunction((x) => Math.tan(this.toRadians(x)), (x) => x % 180 !== 90);
     }
 
     applyAsin() {
-        if (this.hasError) return;
-        try {
-            const currentValue = this.evaluateCurrentExpression();
-            if (currentValue < -1 || currentValue > 1) {
-                this.updateDisplay("Invalid expression");
-                this.hasError = true;
-                return;
-            }
-            const result = this.toDegrees(Math.asin(currentValue));
-            this.updateDisplay(this.formatResult(result));
-            this.justCalculated = true;
-        } catch {
-            this.updateDisplay("Invalid expression");
-            this.hasError = true;
-        }
+        this.applyUnaryFunction((x) => this.toDegrees(Math.asin(x)), (x) => x >= -1 && x <= 1);
     }
 
     applyAcos() {
-        if (this.hasError) return;
-        try {
-            const currentValue = this.evaluateCurrentExpression();
-            if (currentValue < -1 || currentValue > 1) {
-                this.updateDisplay("Invalid expression");
-                this.hasError = true;
-                return;
-            }
-            const result = this.toDegrees(Math.acos(currentValue));
-            this.updateDisplay(this.formatResult(result));
-            this.justCalculated = true;
-        } catch {
-            this.updateDisplay("Invalid expression");
-            this.hasError = true;
-        }
+        this.applyUnaryFunction((x) => this.toDegrees(Math.acos(x)), (x) => x >= -1 && x <= 1);
     }
 
     applyAtan() {
-        if (this.hasError) return;
-        try {
-            const currentValue = this.evaluateCurrentExpression();
-            const result = this.toDegrees(Math.atan(currentValue));
-            this.updateDisplay(this.formatResult(result));
-            this.justCalculated = true;
-        } catch {
-            this.updateDisplay("Invalid expression");
-            this.hasError = true;
-        }
+        this.applyUnaryFunction((x) => this.toDegrees(Math.atan(x)));
     }
 
     // +/- 
@@ -507,29 +365,11 @@ export class Calculator {
     }
 
     applyFloor() {
-        if (this.hasError) return;
-        try {
-            const currentValue = this.evaluateCurrentExpression();
-            const result = Math.floor(currentValue);
-            this.updateDisplay(this.formatResult(result));
-            this.justCalculated = true;
-        } catch {
-            this.updateDisplay("Invalid expression");
-            this.hasError = true;
-        }
+        this.applyUnaryFunction(Math.floor);
     }
 
     applyCeil() {
-        if (this.hasError) return;
-        try {
-            const currentValue = this.evaluateCurrentExpression();
-            const result = Math.ceil(currentValue);
-            this.updateDisplay(this.formatResult(result));
-            this.justCalculated = true;
-        } catch {
-            this.updateDisplay("Invalid expression");
-            this.hasError = true;
-        }
+        this.applyUnaryFunction(Math.ceil);
     }
 
     applyRand() {
@@ -540,15 +380,6 @@ export class Calculator {
     }
 
     applyRound() {
-        if (this.hasError) return;
-        try {
-            const currentValue = this.evaluateCurrentExpression();
-            const result = Math.round(currentValue);
-            this.updateDisplay(this.formatResult(result));
-            this.justCalculated = true;
-        } catch {
-            this.updateDisplay("Invalid expression");
-            this.hasError = true;
-        }
+        this.applyUnaryFunction(Math.round);
     }
 }
