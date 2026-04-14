@@ -185,26 +185,28 @@ export class Calculator {
     }
 
     // Common function for unary operations that compute immediately
-    applyUnaryFunction(mathFunc, validator = null) {
+    applyUnaryFunction(mathFunc, validator = null, historyName = null) {
         if (this.hasError) return;
         try {
+            const originalExpr = this.display.textContent;
             const currentValue = this.evaluateCurrentExpression();
             if (validator && !validator(currentValue)) {
-                this.updateDisplay("Invalid expression");
-                this.hasError = true;
-                return;
+                throw new Error("Invalid input for function");
             }
-
             const result = mathFunc(currentValue);
             if (!isFinite(result)) {
-                this.updateDisplay("Invalid expression");
-                this.hasError = true;
-                return;
+                throw new Error("Invalid result");
             }
-
-            this.updateDisplay(this.formatResult(result));
+            const formattedResult = this.formatResult(result);
+            this.updateDisplay(formattedResult);
             this.justCalculated = true;
-        } catch {
+
+            // Add to history
+            if (historyName) {
+                this.history.add(historyName + "(" + originalExpr + ")", formattedResult);
+                this.updateHistoryPanel();
+            }
+        } catch (err) {
             this.updateDisplay("Invalid expression");
             this.hasError = true;
         }
@@ -226,7 +228,7 @@ export class Calculator {
     }
 
     applyTenPower() {
-        this.applyUnaryFunction((x) => Math.pow(10, x));
+        this.applyUnaryFunction((x) => Math.pow(10, x), null, "10^");
     }
 
     applyReciprocal() {
@@ -241,11 +243,11 @@ export class Calculator {
     }
 
     applyAbsolute() {
-        this.applyUnaryFunction(Math.abs);
+        this.applyUnaryFunction(Math.abs, null, "abs");
     }
 
     applySquareRoot() {
-        this.applyUnaryFunction(Math.sqrt, (x) => x >= 0);
+        this.applyUnaryFunction(Math.sqrt, (x) => x >= 0, "√");
     }
 
     applyFactorial() {
@@ -253,11 +255,11 @@ export class Calculator {
     }
 
     applyLog10() {
-        this.applyUnaryFunction(Math.log10, (x) => x > 0);
+        this.applyUnaryFunction(Math.log10, (x) => x > 0, "log");
     }
 
     applyLn() {
-        this.applyUnaryFunction(Math.log, (x) => x > 0);
+        this.applyUnaryFunction(Math.log, (x) => x > 0, "ln");
     }
 
     applyExp() {
@@ -269,11 +271,11 @@ export class Calculator {
     }
 
     applyCubeRoot() {
-        this.applyUnaryFunction(Math.cbrt);
+        this.applyUnaryFunction(Math.cbrt, null, "∛");
     }
 
     applyTwoPower() {
-        this.applyUnaryFunction((x) => Math.pow(2, x));
+        this.applyUnaryFunction((x) => Math.pow(2, x), null, "2^");
     }
 
     toRadians(deg) {
@@ -285,27 +287,27 @@ export class Calculator {
     }
 
     applySin() {
-        this.applyUnaryFunction((x) => Math.sin(this.toRadians(x)));
+        this.applyUnaryFunction((x) => Math.sin(this.toRadians(x)), null, "sin");
     }
 
     applyCos() {
-        this.applyUnaryFunction((x) => Math.cos(this.toRadians(x)));
+        this.applyUnaryFunction((x) => Math.cos(this.toRadians(x)), null, "cos");
     }
 
     applyTan() {
-        this.applyUnaryFunction((x) => Math.tan(this.toRadians(x)), (x) => x % 180 !== 90);
+        this.applyUnaryFunction((x) => Math.tan(this.toRadians(x)), (x) => x % 180 !== 90, "tan");
     }
 
     applyAsin() {
-        this.applyUnaryFunction((x) => this.toDegrees(Math.asin(x)), (x) => x >= -1 && x <= 1);
+        this.applyUnaryFunction((x) => this.toDegrees(Math.asin(x)), (x) => x >= -1 && x <= 1, "sin⁻¹");
     }
 
     applyAcos() {
-        this.applyUnaryFunction((x) => this.toDegrees(Math.acos(x)), (x) => x >= -1 && x <= 1);
+        this.applyUnaryFunction((x) => this.toDegrees(Math.acos(x)), (x) => x >= -1 && x <= 1, "cos⁻¹");
     }
 
     applyAtan() {
-        this.applyUnaryFunction((x) => this.toDegrees(Math.atan(x)));
+        this.applyUnaryFunction((x) => this.toDegrees(Math.atan(x)), null, "tan⁻¹");
     }
 
     // +/- 
@@ -365,21 +367,24 @@ export class Calculator {
     }
 
     applyFloor() {
-        this.applyUnaryFunction(Math.floor);
+        this.applyUnaryFunction(Math.floor, null, "floor");
     }
 
     applyCeil() {
-        this.applyUnaryFunction(Math.ceil);
+        this.applyUnaryFunction(Math.ceil, null, "ceil");
     }
 
     applyRand() {
         const result = Math.random();
-        this.updateDisplay(this.formatResult(result));
+        const formattedResult = this.formatResult(result);
+        this.updateDisplay(formattedResult);
         this.justCalculated = true;
         this.hasError = false;
+        this.history.add("rand()", formattedResult);
+        this.updateHistoryPanel();
     }
 
     applyRound() {
-        this.applyUnaryFunction(Math.round);
+        this.applyUnaryFunction(Math.round, null, "round");
     }
 }
