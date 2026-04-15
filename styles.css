@@ -1,14 +1,20 @@
 :root {
     /* Layout */
-    --calc-width: min(90vw, 32rem); /* 360px */
+    --calc-width: min(90vw, 32rem);
+    /* 360px */
     --radius: 0.5rem;
 
     /* Spacing scale (4px system) */
-    --space-xs: 0.25rem;  /* 4px */
-    --space-sm: 0.5rem;   /* 8px */
-    --space-md: 0.75rem;  /* 12px */
-    --space-lg: 1rem;     /* 16px */
-    --space-xl: 1.25rem;  /* 20px */
+    --space-xs: 0.25rem;
+    /* 4px */
+    --space-sm: 0.5rem;
+    /* 8px */
+    --space-md: 0.75rem;
+    /* 12px */
+    --space-lg: 1rem;
+    /* 16px */
+    --space-xl: 1.25rem;
+    /* 20px */
 
     /* Font */
     --font-base: 1.2rem;
@@ -222,8 +228,21 @@ body {
 
 /* Active 2nd button */
 .active-2nd {
-    background: var(--primary) !important;
-    color: white !important;
+    background: var(--primary);
+    color: white;
+}
+
+.active-2nd:hover {
+    background: var(--primary-hover);
+}
+
+.dropdown-content button.active-2nd {
+    background: var(--primary);
+    color: white;
+}
+
+.dropdown-content button.active-2nd:hover {
+    background: var(--primary-hover);
 }
 
 /* Buttons grid */

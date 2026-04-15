@@ -12,6 +12,24 @@ const clearHistoryBtn = document.getElementById("clearHistory");
 
 const calculator = new Calculator(display, historyPanel);
 
+let outer2ndActive = false;
+const outer2ndBtn = document.getElementById("outer-2nd-btn");
+const squareBtn = document.getElementById("square-btn");
+const sqrtBtn = document.getElementById("sqrt-btn");
+const powerBtn = document.getElementById("power-btn");
+
+let trig2ndActive = false;
+const trig2ndBtn = document.getElementById("trig-2nd-btn");
+const sinBtn = document.getElementById("sin-btn");
+const cosBtn = document.getElementById("cos-btn");
+const tanBtn = document.getElementById("tan-btn");
+
+// Dropdown JS toggle
+const trigDropdownBtn = document.getElementById("trig-dropdown-btn");
+const trigDropdownContent = document.getElementById("trig-dropdown-content");
+const funcDropdownBtn = document.getElementById("func-dropdown-btn");
+const funcDropdownContent = document.getElementById("func-dropdown-content");
+
 calculator.updateHistoryPanel();
 
 // Make display focusable
@@ -29,12 +47,6 @@ clearHistoryBtn.addEventListener("click", (e) => {
     calculator.clearHistory();
 });
 
-let outer2ndActive = false;
-const outer2ndBtn = document.getElementById("outer-2nd-btn");
-const squareBtn = document.getElementById("square-btn");
-const sqrtBtn = document.getElementById("sqrt-btn");
-const powerBtn = document.getElementById("power-btn");
-
 outer2ndBtn.addEventListener("click", (e) => {
     e.stopPropagation();
     outer2ndActive = !outer2ndActive;
@@ -51,12 +63,6 @@ outer2ndBtn.addEventListener("click", (e) => {
     }
 });
 
-let trig2ndActive = false;
-const trig2ndBtn = document.getElementById("trig-2nd-btn");
-const sinBtn = document.getElementById("sin-btn");
-const cosBtn = document.getElementById("cos-btn");
-const tanBtn = document.getElementById("tan-btn");
-
 trig2ndBtn.addEventListener("click", (e) => {
     e.stopPropagation();
     trig2ndActive = !trig2ndActive;
@@ -72,12 +78,6 @@ trig2ndBtn.addEventListener("click", (e) => {
         tanBtn.textContent = "tan";
     }
 });
-
-// Dropdown JS toggle
-const trigDropdownBtn = document.getElementById("trig-dropdown-btn");
-const trigDropdownContent = document.getElementById("trig-dropdown-content");
-const funcDropdownBtn = document.getElementById("func-dropdown-btn");
-const funcDropdownContent = document.getElementById("func-dropdown-content");
 
 function closeAllDropdowns() {
     trigDropdownContent.classList.remove("open");
