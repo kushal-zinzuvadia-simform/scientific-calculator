@@ -7,17 +7,22 @@ export class Expression {
             throw new Error("Invalid expression: multiple decimal points in number");
         }
 
+        // Check for consecutive functions
+        if (/[+\-*/%^!]{2,}/.test(expr)) {
+            throw new Error("Invalid expression: consecutive operators");
+        }
+
         // Normalize operator symbols: × to *, ÷ to /
         expr = expr.replace(/×/g, "*").replace(/÷/g, "/");
 
         // (\d+\.?\d*) match integers or decimals
         //      |      OR
-        // (ln|log|√|abs)  match function names
+        // (ln|log|√|abs|sin|cos|tan|asin|acos|atan|floor|ceil|round)  match function names
         //      |      OR
         // [+\-*/%()^!]  match operators and parentheses, including ^
         //      |      OR
         // (π|e)       match pi and e constants
-        const tokens = expr.match(/(\d+\.?\d*|ln|log|√|abs|[+\-*/%()^!]|π|e|10\^|1\/)/g);
+        const tokens = expr.match(/(\d+\.?\d*|ln|log|√|abs|sin|cos|tan|asin|acos|atan|floor|ceil|round|∛|[+\-*/%()^!]|π|e|10\^|1\/)/g);
 
         // Process tokens to identify unary minus
         return this.processUnaryMinus(tokens);
@@ -96,7 +101,7 @@ Expression.prototype.precedence = function (op) {
 Expression.prototype.toPostfix = function (tokens) {
     const output = [];
     const stack = [];
-    const prefixFunctions = ["ln", "log", "√", "abs"];
+    const prefixFunctions = ["ln", "log", "√", "abs", "sin", "cos", "tan", "asin", "acos", "atan", "floor", "ceil", "round", "∛"];
 
     tokens.forEach((token, index) => {
         if (!isNaN(token)) {
@@ -157,7 +162,7 @@ Expression.prototype.toPostfix = function (tokens) {
 
 Expression.prototype.evaluatePostfix = function (postfix) {
     const stack = [];
-    const prefixFunctions = ["ln", "log", "√", "abs"];
+    const prefixFunctions = ["ln", "log", "√", "abs", "sin", "cos", "tan", "asin", "acos", "atan", "floor", "ceil", "round", "∛"];
 
     postfix.forEach(token => {
         if (!isNaN(token)) {
@@ -204,6 +209,38 @@ Expression.prototype.evaluatePostfix = function (postfix) {
                     break;
                 case "abs":
                     result = Math.abs(x);
+                    break;
+                case "sin":
+                    result = Math.sin(x * Math.PI / 180);
+                    break;
+                case "cos":
+                    result = Math.cos(x * Math.PI / 180);
+                    break;
+                case "tan":
+                    result = Math.tan(x * Math.PI / 180);
+                    break;
+                case "asin":
+                    if (x < -1 || x > 1) throw new Error("asin domain error");
+                    result = Math.asin(x) * 180 / Math.PI;
+                    break;
+                case "acos":
+                    if (x < -1 || x > 1) throw new Error("acos domain error");
+                    result = Math.acos(x) * 180 / Math.PI;
+                    break;
+                case "atan":
+                    result = Math.atan(x) * 180 / Math.PI;
+                    break;
+                case "floor":
+                    result = Math.floor(x);
+                    break;
+                case "ceil":
+                    result = Math.ceil(x);
+                    break;
+                case "round":
+                    result = Math.round(x);
+                    break;
+                case "∛":
+                    result = Math.cbrt(x);
                     break;
                 default:
                     throw new Error("Unknown function: " + token);

@@ -22,7 +22,7 @@ export class Calculator {
     }
 
     isOperator(value) {
-        return ["+", "-", "×", "÷", "%"].includes(value);
+        return ["+", "-", "×", "÷", "%", "!"].includes(value);
     }
 
     clearIfError() {
@@ -53,6 +53,29 @@ export class Calculator {
         }
 
         let currentText = this.display.textContent;
+        const lastChar = currentText[currentText.length - 1];
+        const operatorLike = new Set(["+", "-", "×", "÷", "%", "!", "^", "π", "e"]);
+
+        // Prevent consecutive tokens 
+        if (operatorLike.has(value) && operatorLike.has(lastChar)) {
+            if (value === lastChar) {
+                return;
+            }
+            this.updateDisplay(currentText.slice(0, -1) + value);
+            this.justCalculated = false;
+            return;
+        }
+
+        // Prevent consecutive decimal 
+        if (value === ".") {
+            const lastNumberMatch = currentText.match(/(\d*\.?\d*)$/);
+            if (lastNumberMatch && lastNumberMatch[1].includes(".")) {
+                return;
+            }
+            if (lastChar === ".") {
+                return;
+            }
+        }
 
         if (this.justCalculated && this.isStartOfNewEntry(value)) {
             this.updateDisplay(value);
@@ -184,32 +207,11 @@ export class Calculator {
         this.updateHistoryPanel();
     }
 
-    // Common function for unary operations that compute immediately
-    applyUnaryFunction(mathFunc, validator = null, historyName = null) {
-        if (this.hasError) return;
-        try {
-            const originalExpr = this.display.textContent;
-            const currentValue = this.evaluateCurrentExpression();
-            if (validator && !validator(currentValue)) {
-                throw new Error("Invalid input for function");
-            }
-            const result = mathFunc(currentValue);
-            if (!isFinite(result)) {
-                throw new Error("Invalid result");
-            }
-            const formattedResult = this.formatResult(result);
-            this.updateDisplay(formattedResult);
-            this.justCalculated = true;
-
-            // Add to history
-            if (historyName) {
-                this.history.add(historyName + "(" + originalExpr + ")", formattedResult);
-                this.updateHistoryPanel();
-            }
-        } catch (err) {
-            this.updateDisplay("Invalid expression");
-            this.hasError = true;
-        }
+    // Common function for unary operations 
+    applyUnaryFunction(format) {
+        const expr = this.display.textContent;
+        this.updateDisplay(format.replace("%s", expr));
+        this.justCalculated = false;
     }
 
     appendToExpression(suffix) {
@@ -220,7 +222,7 @@ export class Calculator {
     }
 
     applySquare() {
-        this.appendToExpression("^2");
+        this.applyUnaryFunction("(%s)^2");
     }
 
     applyPower() {
@@ -228,7 +230,7 @@ export class Calculator {
     }
 
     applyTenPower() {
-        this.applyUnaryFunction((x) => Math.pow(10, x), null, "10^");
+        this.applyUnaryFunction("10^(%s)");
     }
 
     applyReciprocal() {
@@ -243,39 +245,39 @@ export class Calculator {
     }
 
     applyAbsolute() {
-        this.applyUnaryFunction(Math.abs, null, "abs");
+        this.applyUnaryFunction("abs(%s)");
     }
 
     applySquareRoot() {
-        this.applyUnaryFunction(Math.sqrt, (x) => x >= 0, "√");
+        this.applyUnaryFunction("√(%s)");
     }
 
     applyFactorial() {
-        this.appendToExpression("!");
+        this.applyUnaryFunction("%s!");
     }
 
     applyLog10() {
-        this.applyUnaryFunction(Math.log10, (x) => x > 0, "log");
+        this.applyUnaryFunction("log(%s)");
     }
 
     applyLn() {
-        this.applyUnaryFunction(Math.log, (x) => x > 0, "ln");
+        this.applyUnaryFunction("ln(%s)");
     }
 
     applyExp() {
-        this.appendToExpression("^");
+        this.applyUnaryFunction("%s^");
     }
 
     applyCube() {
-        this.appendToExpression("^3");
+        this.applyUnaryFunction("(%s)^3");
     }
 
     applyCubeRoot() {
-        this.applyUnaryFunction(Math.cbrt, null, "∛");
+        this.applyUnaryFunction("∛(%s)");
     }
 
     applyTwoPower() {
-        this.applyUnaryFunction((x) => Math.pow(2, x), null, "2^");
+        this.applyUnaryFunction("2^(%s)");
     }
 
     toRadians(deg) {
@@ -287,27 +289,27 @@ export class Calculator {
     }
 
     applySin() {
-        this.applyUnaryFunction((x) => Math.sin(this.toRadians(x)), null, "sin");
+        this.applyUnaryFunction("sin(%s)");
     }
 
     applyCos() {
-        this.applyUnaryFunction((x) => Math.cos(this.toRadians(x)), null, "cos");
+        this.applyUnaryFunction("cos(%s)");
     }
 
     applyTan() {
-        this.applyUnaryFunction((x) => Math.tan(this.toRadians(x)), (x) => x % 180 !== 90, "tan");
+        this.applyUnaryFunction("tan(%s)");
     }
 
     applyAsin() {
-        this.applyUnaryFunction((x) => this.toDegrees(Math.asin(x)), (x) => x >= -1 && x <= 1, "sin⁻¹");
+        this.applyUnaryFunction("asin(%s)");
     }
 
     applyAcos() {
-        this.applyUnaryFunction((x) => this.toDegrees(Math.acos(x)), (x) => x >= -1 && x <= 1, "cos⁻¹");
+        this.applyUnaryFunction("acos(%s)");
     }
 
     applyAtan() {
-        this.applyUnaryFunction((x) => this.toDegrees(Math.atan(x)), null, "tan⁻¹");
+        this.applyUnaryFunction("atan(%s)");
     }
 
     // +/- 
@@ -367,11 +369,11 @@ export class Calculator {
     }
 
     applyFloor() {
-        this.applyUnaryFunction(Math.floor, null, "floor");
+        this.applyUnaryFunction("floor(%s)");
     }
 
     applyCeil() {
-        this.applyUnaryFunction(Math.ceil, null, "ceil");
+        this.applyUnaryFunction("ceil(%s)");
     }
 
     applyRand() {
@@ -385,6 +387,6 @@ export class Calculator {
     }
 
     applyRound() {
-        this.applyUnaryFunction(Math.round, null, "round");
+        this.applyUnaryFunction("round(%s)");
     }
 }
