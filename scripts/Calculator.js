@@ -143,7 +143,7 @@ export class Calculator {
             const result = this.expression.evaluate(input);
 
             if (isNaN(result) || !isFinite(result)) {
-                this.updateDisplay("Invalid expression");
+                this.updateDisplay(result === Infinity || result === -Infinity ? "Infinite" : "Invalid expression");
                 this.hasError = true;
                 this.justCalculated = false;
                 return;
@@ -207,9 +207,30 @@ export class Calculator {
         this.updateHistoryPanel();
     }
 
-    // Common function for unary operations 
+    // Common function for unary operations
     applyUnaryFunction(format) {
+        if (this.hasError) return;
+
         const expr = this.display.textContent;
+        const lastChar = expr[expr.length - 1];
+        const isPostfix = format.startsWith("%s"); 
+
+        if (isPostfix) {
+            // Postfix ops (!, ^, x², x³) require an operand
+            if (expr === "0") return;
+            if (lastChar === "!" || lastChar === "^") return;
+            // Must end in a digit, ")", π, or e
+            if (!/[0-9)πe]$/.test(expr)) return;
+        } else {
+            // Prefix/wrap functions 
+            if (expr === "0") {
+                const openForm = format.replace("(%s)", "(").replace("%s", "");
+                this.updateDisplay(openForm);
+                this.justCalculated = false;
+                return;
+            }
+        }
+
         this.updateDisplay(format.replace("%s", expr));
         this.justCalculated = false;
     }
@@ -217,6 +238,15 @@ export class Calculator {
     appendToExpression(suffix) {
         if (this.hasError) return;
         const expr = this.display.textContent;
+        const lastChar = expr[expr.length - 1];
+
+        // "^" is only valid after a digit, ")", π, e
+        if (suffix === "^") {
+            if (expr === "0") return;
+            if (!/[0-9)πe]$/.test(expr)) return;
+            if (lastChar === "^" || lastChar === "!") return;
+        }
+
         this.updateDisplay(expr + suffix);
         this.justCalculated = false;
     }

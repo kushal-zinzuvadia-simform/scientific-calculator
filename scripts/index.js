@@ -227,11 +227,19 @@ document.addEventListener("keydown", (e) => {
         e.preventDefault();
     }
     else if (key === "*") {
-        calculator.append("*");
+        calculator.append("×");
         e.preventDefault();
     }
     else if (key === "/") {
-        calculator.append("/");
+        calculator.append("÷");
+        e.preventDefault();
+    }
+    else if (key === "!") {
+        calculator.append("!");
+        e.preventDefault();
+    }
+    else if (key === "^") {
+        calculator.append("^");
         e.preventDefault();
     }
 
