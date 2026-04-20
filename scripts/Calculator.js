@@ -11,6 +11,12 @@ export class Calculator {
         this.history = new History();
         this.justCalculated = false;
         this.hasError = false;
+        this.memory = 0;
+    }
+
+    getCurrentValue() {
+        const text = this.display.textContent || "0";
+        return parseFloat(text) || 0;
     }
 
     updateDisplay(text) {
@@ -33,6 +39,19 @@ export class Calculator {
             return true;
         }
         return false;
+    }
+
+    handleMemory(type) {
+        if (this.hasError) return;
+        const value = this.getCurrentValue();
+
+        switch (type) {
+            case "MS": this.memory = value; break;
+            case "MR": this.updateDisplay(this.formatResult(this.memory)); this.justCalculated(false); break;
+            case "M+": this.memory += value; break;
+            case "M-": this.memory -= value; break;
+            case "MC": this.memory = 0; break;
+        }
     }
 
     append(value) {

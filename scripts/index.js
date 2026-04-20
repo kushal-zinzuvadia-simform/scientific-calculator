@@ -119,7 +119,10 @@ document.body.addEventListener("click", (e) => {
         display.focus();
     } else if (value === "C") {
         calculator.clear();
-    } else if (btn.getAttribute("aria-label") === "Backspace") {
+    } else if (value === "MS" || value === "MR" || value === "M+" || value === "M-" || value === "MC") {
+        calculator.handleMemory(value);
+    }
+    else if (btn.getAttribute("aria-label") === "Backspace") {
         calculator.delete();
 
     } else if (btn.id === "square-btn") {
