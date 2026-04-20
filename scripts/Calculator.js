@@ -47,7 +47,7 @@ export class Calculator {
 
         switch (type) {
             case "MS": this.memory = value; break;
-            case "MR": this.updateDisplay(this.formatResult(this.memory)); this.justCalculated(false); break;
+            case "MR": this.updateDisplay(this.formatResult(this.memory)); this.justCalculated = false; break;
             case "M+": this.memory += value; break;
             case "M-": this.memory -= value; break;
             case "MC": this.memory = 0; break;
@@ -147,7 +147,7 @@ export class Calculator {
 
     evaluateCurrentExpression() {
         let input = this.display.textContent.trim();
-        const result = this.expression.evaluate(input);
+        const result = this.expression.evaluate(input, this.mode);
         if (isNaN(result) || !isFinite(result)) {
             throw new Error("Invalid result");
         }
@@ -159,7 +159,7 @@ export class Calculator {
 
         try {
             let input = this.display.textContent.trim();
-            const result = this.expression.evaluate(input);
+            const result = this.expression.evaluate(input, this.mode);
 
             if (isNaN(result) || !isFinite(result)) {
                 this.updateDisplay(result === Infinity || result === -Infinity ? "Infinite" : "Invalid expression");
@@ -232,7 +232,7 @@ export class Calculator {
 
         const expr = this.display.textContent;
         const lastChar = expr[expr.length - 1];
-        const isPostfix = format.startsWith("%s"); 
+        const isPostfix = format.startsWith("%s");
 
         if (isPostfix) {
             // Postfix ops (!, ^, x², x³) require an operand
@@ -327,14 +327,6 @@ export class Calculator {
 
     applyTwoPower() {
         this.applyUnaryFunction("2^(%s)");
-    }
-
-    toRadians(deg) {
-        return deg * (Math.PI / 180);
-    }
-
-    toDegrees(rad) {
-        return rad * (180 / Math.PI);
     }
 
     applySin() {

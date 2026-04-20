@@ -30,11 +30,23 @@ const trigDropdownContent = document.getElementById("trig-dropdown-content");
 const funcDropdownBtn = document.getElementById("func-dropdown-btn");
 const funcDropdownContent = document.getElementById("func-dropdown-content");
 
+const modeBtn = document.getElementById("mode-btn");
+
 calculator.updateHistoryPanel();
 
 // Make display focusable
 display.contentEditable = false;
 display.tabIndex = 0;
+
+modeBtn.addEventListener("click", () => {
+    if (calculator.mode === "DEG") {
+        calculator.mode = "RAD";
+        modeBtn.textContent = "RAD";
+    } else {
+        calculator.mode = "DEG";
+        modeBtn.textContent = "DEG";
+    }
+});
 
 // History toggle
 historyToggleBtn.addEventListener("click", () => {
@@ -110,6 +122,7 @@ document.body.addEventListener("click", (e) => {
 
     if (btn.id === "historyToggle" || btn.id === "clearHistory") return;
     if (btn.id === "outer-2nd-btn" || btn.id === "trig-2nd-btn") return;
+    if (btn.dataset.type === "mode") return;
     if (btn.classList.contains("dropdown-btn")) return;
 
     let value = btn.innerText;

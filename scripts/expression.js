@@ -160,7 +160,7 @@ Expression.prototype.toPostfix = function (tokens) {
     return output.concat(stack.reverse());
 };
 
-Expression.prototype.evaluatePostfix = function (postfix) {
+Expression.prototype.evaluatePostfix = function (postfix, mode) {
     const stack = [];
     const prefixFunctions = ["ln", "log", "√", "abs", "sin", "cos", "tan", "asin", "acos", "atan", "floor", "ceil", "round", "∛"];
 
@@ -193,7 +193,7 @@ Expression.prototype.evaluatePostfix = function (postfix) {
         else if (prefixFunctions.includes(token)) {
             const x = stack.pop();
             let result;
-            
+
             switch (token) {
                 case "ln":
                     if (x <= 0) throw new Error("ln of non-positive number");
@@ -211,24 +211,36 @@ Expression.prototype.evaluatePostfix = function (postfix) {
                     result = Math.abs(x);
                     break;
                 case "sin":
-                    result = Math.sin(x * Math.PI / 180);
+                    result = mode === "DEG"
+                        ? Math.sin(x * Math.PI / 180)
+                        : Math.sin(x);
                     break;
                 case "cos":
-                    result = Math.cos(x * Math.PI / 180);
+                    result = mode === "DEG"
+                        ? Math.cos(x * Math.PI / 180)
+                        : Math.cos(x);
                     break;
                 case "tan":
-                    result = Math.tan(x * Math.PI / 180);
+                    result = mode === "DEG"
+                        ? Math.tan(x * Math.PI / 180)
+                        : Math.tan(x);
                     break;
                 case "asin":
                     if (x < -1 || x > 1) throw new Error("asin domain error");
-                    result = Math.asin(x) * 180 / Math.PI;
+                    result = mode === "DEG"
+                        ? Math.asin(x) * 180 / Math.PI
+                        : Math.asin(x);
                     break;
                 case "acos":
                     if (x < -1 || x > 1) throw new Error("acos domain error");
-                    result = Math.acos(x) * 180 / Math.PI;
+                    result = mode === "DEG"
+                        ? Math.acos(x) * 180 / Math.PI
+                        : Math.acos(x);
                     break;
                 case "atan":
-                    result = Math.atan(x) * 180 / Math.PI;
+                    result = mode === "DEG"
+                        ? Math.atan(x) * 180 / Math.PI
+                        : Math.atan(x);
                     break;
                 case "floor":
                     result = Math.floor(x);
@@ -287,11 +299,11 @@ Expression.prototype.evaluatePostfix = function (postfix) {
     return stack[0];
 };
 
-Expression.prototype.evaluate = function (expr) {
+Expression.prototype.evaluate = function (expr, mode = "DEG") {
     try {
         const tokens = this.tokenize(expr);
         const postfix = this.toPostfix(tokens);
-        return this.evaluatePostfix(postfix);
+        return this.evaluatePostfix(postfix, mode);
     } catch (err) {
         throw new Error("Invalid Expression");
     }
