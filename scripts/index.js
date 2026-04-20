@@ -12,6 +12,24 @@ const clearHistoryBtn = document.getElementById("clearHistory");
 
 const calculator = new Calculator(display, historyPanel);
 
+let outer2ndActive = false;
+const outer2ndBtn = document.getElementById("outer-2nd-btn");
+const squareBtn = document.getElementById("square-btn");
+const sqrtBtn = document.getElementById("sqrt-btn");
+const powerBtn = document.getElementById("power-btn");
+
+let trig2ndActive = false;
+const trig2ndBtn = document.getElementById("trig-2nd-btn");
+const sinBtn = document.getElementById("sin-btn");
+const cosBtn = document.getElementById("cos-btn");
+const tanBtn = document.getElementById("tan-btn");
+
+// Dropdown JS toggle
+const trigDropdownBtn = document.getElementById("trig-dropdown-btn");
+const trigDropdownContent = document.getElementById("trig-dropdown-content");
+const funcDropdownBtn = document.getElementById("func-dropdown-btn");
+const funcDropdownContent = document.getElementById("func-dropdown-content");
+
 calculator.updateHistoryPanel();
 
 // Make display focusable
@@ -26,10 +44,63 @@ historyToggleBtn.addEventListener("click", () => {
 // Clear history
 clearHistoryBtn.addEventListener("click", (e) => {
     e.stopPropagation();
-    if (calculator.history.getAll().length === 0) {
-        alert("History is empty");
-    } else if (confirm("Are you sure you want to clear history?")) {
-        calculator.clearHistory();
+    calculator.clearHistory();
+});
+
+outer2ndBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    outer2ndActive = !outer2ndActive;
+    if (outer2ndActive) {
+        outer2ndBtn.classList.add("active-2nd");
+        squareBtn.textContent = "x³";
+        sqrtBtn.textContent = "³√x";
+        powerBtn.textContent = "2ˣ";
+    } else {
+        outer2ndBtn.classList.remove("active-2nd");
+        squareBtn.textContent = "x²";
+        sqrtBtn.textContent = "²√x";
+        powerBtn.textContent = "10ˣ";
+    }
+});
+
+trig2ndBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    trig2ndActive = !trig2ndActive;
+    if (trig2ndActive) {
+        trig2ndBtn.classList.add("active-2nd");
+        sinBtn.textContent = "sin⁻¹";
+        cosBtn.textContent = "cos⁻¹";
+        tanBtn.textContent = "tan⁻¹";
+    } else {
+        trig2ndBtn.classList.remove("active-2nd");
+        sinBtn.textContent = "sin";
+        cosBtn.textContent = "cos";
+        tanBtn.textContent = "tan";
+    }
+});
+
+function closeAllDropdowns() {
+    trigDropdownContent.classList.remove("open");
+    funcDropdownContent.classList.remove("open");
+}
+
+trigDropdownBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const wasOpen = trigDropdownContent.classList.contains("open");
+    closeAllDropdowns();
+    if (!wasOpen) trigDropdownContent.classList.add("open");
+});
+
+funcDropdownBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const wasOpen = funcDropdownContent.classList.contains("open");
+    closeAllDropdowns();
+    if (!wasOpen) funcDropdownContent.classList.add("open");
+});
+
+document.addEventListener("click", (e) => {
+    if (!e.target.closest(".dropdown")) {
+        closeAllDropdowns();
     }
 });
 
@@ -37,9 +108,9 @@ document.body.addEventListener("click", (e) => {
     const btn = e.target.closest("button");
     if (!btn) return;
 
-    if (btn.id === "historyToggle" || btn.id === "clearHistory") {
-        return;
-    }
+    if (btn.id === "historyToggle" || btn.id === "clearHistory") return;
+    if (btn.id === "outer-2nd-btn" || btn.id === "trig-2nd-btn") return;
+    if (btn.classList.contains("dropdown-btn")) return;
 
     let value = btn.innerText;
 
@@ -50,6 +121,72 @@ document.body.addEventListener("click", (e) => {
         calculator.clear();
     } else if (btn.getAttribute("aria-label") === "Backspace") {
         calculator.delete();
+
+    } else if (btn.id === "square-btn") {
+        if (outer2ndActive) {
+            calculator.applyCube();
+        } else {
+            calculator.applySquare();
+        }
+
+    } else if (btn.id === "sqrt-btn") {
+        if (outer2ndActive) {
+            calculator.applyCubeRoot();
+        } else {
+            calculator.applySquareRoot();
+        }
+
+    } else if (btn.id === "power-btn") {
+        if (outer2ndActive) {
+            calculator.applyTwoPower();
+        } else {
+            calculator.applyTenPower();
+        }
+
+    } else if (value === "xʸ") {
+        calculator.applyPower();
+    } else if (value === "1/x") {
+        calculator.applyReciprocal();
+    } else if (value === "|x|") {
+        calculator.applyAbsolute();
+    } else if (value === "n!") {
+        calculator.applyFactorial();
+    } else if (value === "log") {
+        calculator.applyLog10();
+    } else if (value === "ln") {
+        calculator.applyLn();
+    } else if (value === "exp") {
+        calculator.applyExp();
+    } else if (value === "+/-") {
+        calculator.applyNegate();
+    } else if (btn.id === "sin-btn") {
+        if (trig2ndActive) {
+            calculator.applyAsin();
+        } else {
+            calculator.applySin();
+        }
+    } else if (btn.id === "cos-btn") {
+        if (trig2ndActive) {
+            calculator.applyAcos();
+        } else {
+            calculator.applyCos();
+        }
+    } else if (btn.id === "tan-btn") {
+        if (trig2ndActive) {
+            calculator.applyAtan();
+        } else {
+            calculator.applyTan();
+        }
+
+    } else if (value === "⌊x⌋") {
+        calculator.applyFloor();
+    } else if (value === "⌈x⌉") {
+        calculator.applyCeil();
+    } else if (value === "rand") {
+        calculator.applyRand();
+    } else if (value === "round") {
+        calculator.applyRound();
+
     } else {
         if (value === "mod") {
             value = "%";
@@ -64,11 +201,7 @@ document.addEventListener("keydown", (e) => {
 
     if (e.ctrlKey || e.metaKey || e.altKey) return;
 
-    if (e.target instanceof HTMLButtonElement || e.target.closest("button")) {
-        return;
-    }
-
-    // Handle modulo operator with %
+    // Handle modulo 
     if (key === "%") {
         calculator.append("%");
         e.preventDefault();
@@ -94,11 +227,19 @@ document.addEventListener("keydown", (e) => {
         e.preventDefault();
     }
     else if (key === "*") {
-        calculator.append("*");
+        calculator.append("×");
         e.preventDefault();
     }
     else if (key === "/") {
-        calculator.append("/");
+        calculator.append("÷");
+        e.preventDefault();
+    }
+    else if (key === "!") {
+        calculator.append("!");
+        e.preventDefault();
+    }
+    else if (key === "^") {
+        calculator.append("^");
         e.preventDefault();
     }
 
