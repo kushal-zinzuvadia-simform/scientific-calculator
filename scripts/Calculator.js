@@ -12,6 +12,8 @@ export class Calculator {
         this.justCalculated = false;
         this.hasError = false;
         this.memory = 0;
+        this.mode = "DEG";  
+        this.isExponential = false;
     }
 
     getCurrentValue() {
@@ -136,7 +138,10 @@ export class Calculator {
         const num = parseFloat(value);
         if (isNaN(num)) return value;
 
-        // Check if it's an integer or very close to one
+        if (this.isExponential) {
+            return num.toExponential(6);
+        }
+
         if (Number.isInteger(num)) {
             return num.toString();
         }
@@ -268,6 +273,15 @@ export class Calculator {
 
         this.updateDisplay(expr + suffix);
         this.justCalculated = false;
+    }
+
+    toggleExponential() {
+        this.isExponential = !this.isExponential;
+
+        if (this.justCalculated) {
+            const value = this.getCurrentValue();
+            this.updateDisplay(this.formatResult(value));
+        }
     }
 
     applySquare() {

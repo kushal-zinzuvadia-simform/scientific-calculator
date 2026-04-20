@@ -31,6 +31,7 @@ const funcDropdownBtn = document.getElementById("func-dropdown-btn");
 const funcDropdownContent = document.getElementById("func-dropdown-content");
 
 const modeBtn = document.getElementById("mode-btn");
+const feBtn = document.getElementById("fe-btn");
 
 calculator.updateHistoryPanel();
 
@@ -39,13 +40,17 @@ display.contentEditable = false;
 display.tabIndex = 0;
 
 modeBtn.addEventListener("click", () => {
-    if (calculator.mode === "DEG") {
-        calculator.mode = "RAD";
-        modeBtn.textContent = "RAD";
-    } else {
-        calculator.mode = "DEG";
-        modeBtn.textContent = "DEG";
-    }
+    const isDeg = calculator.mode === "DEG";
+
+    calculator.mode = isDeg ? "RAD" : "DEG";
+    modeBtn.textContent = calculator.mode;
+
+    modeBtn.classList.toggle("active-mode", calculator.mode === "RAD");
+});
+
+feBtn.addEventListener("click", () => {
+    calculator.toggleExponential();
+    feBtn.classList.toggle("active-mode", calculator.isExponential);
 });
 
 // History toggle
