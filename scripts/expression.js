@@ -212,34 +212,39 @@ Expression.prototype.evaluatePostfix = function (postfix, mode) {
                     break;
                 case "sin":
                     result = mode === "DEG"
-                        ? Math.sin(x * Math.PI / 180)
+                        ? Math.sin(this.toRadian(x))
                         : Math.sin(x);
                     break;
+
                 case "cos":
                     result = mode === "DEG"
-                        ? Math.cos(x * Math.PI / 180)
+                        ? Math.cos(this.toRadian(x))
                         : Math.cos(x);
                     break;
+
                 case "tan":
                     result = mode === "DEG"
-                        ? Math.tan(x * Math.PI / 180)
+                        ? Math.tan(this.toRadian(x))
                         : Math.tan(x);
                     break;
+
                 case "asin":
                     if (x < -1 || x > 1) throw new Error("asin domain error");
                     result = mode === "DEG"
-                        ? Math.asin(x) * 180 / Math.PI
+                        ? this.toDegree(Math.asin(x))
                         : Math.asin(x);
                     break;
+
                 case "acos":
                     if (x < -1 || x > 1) throw new Error("acos domain error");
                     result = mode === "DEG"
-                        ? Math.acos(x) * 180 / Math.PI
+                        ? this.toDegree(Math.acos(x))
                         : Math.acos(x);
                     break;
+
                 case "atan":
                     result = mode === "DEG"
-                        ? Math.atan(x) * 180 / Math.PI
+                        ? this.toDegree(Math.atan(x))
                         : Math.atan(x);
                     break;
                 case "floor":
@@ -307,4 +312,12 @@ Expression.prototype.evaluate = function (expr, mode = "DEG") {
     } catch (err) {
         throw new Error("Invalid Expression");
     }
+};
+
+Expression.prototype.toRadian = function (deg) {
+    return deg * Math.PI / 180;
+};
+
+Expression.prototype.toDegree = function (rad) {
+    return rad * 180 / Math.PI;
 };
