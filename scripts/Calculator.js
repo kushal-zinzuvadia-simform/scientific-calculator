@@ -12,7 +12,7 @@ export class Calculator {
         this.justCalculated = false;
         this.hasError = false;
         this.memory = 0;
-        this.mode = "DEG";  
+        this.mode = "DEG";
         this.isExponential = false;
     }
 
@@ -75,7 +75,7 @@ export class Calculator {
 
         let currentText = this.display.textContent;
         const lastChar = currentText[currentText.length - 1];
-        const operatorLike = new Set(["+", "-", "×", "÷", "%", "!", "^", "π", "e"]);
+        const operatorLike = new Set(["+", "-", "×", "÷", "%", "!", "^"]);
 
         // Prevent consecutive tokens 
         if (operatorLike.has(value) && operatorLike.has(lastChar)) {
@@ -96,6 +96,12 @@ export class Calculator {
             if (lastChar === ".") {
                 return;
             }
+        }
+
+        if ((lastChar === "π" || lastChar === "e") && /[0-9(]/.test(value)) {
+            this.updateDisplay(currentText + "×" + value);
+            this.justCalculated = false;
+            return;
         }
 
         if (this.justCalculated && this.isStartOfNewEntry(value)) {
