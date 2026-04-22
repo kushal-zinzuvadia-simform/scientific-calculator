@@ -49,7 +49,22 @@ export class Calculator {
 
         switch (type) {
             case "MS": this.memory = value; break;
-            case "MR": this.updateDisplay(this.formatResult(this.memory)); this.justCalculated = false; break;
+            case "MR": {
+                const memValue = this.formatResult(this.memory);
+                const current = this.display.textContent;
+                const lastChar = current[current.length - 1];
+
+                if (this.justCalculated || current === "0") {
+                    this.updateDisplay(memValue);
+                } else if (/[+\-×÷%^(]/.test(lastChar)) {
+                    this.updateDisplay(current + memValue);
+                } else {
+                    this.updateDisplay(memValue);
+                }
+
+                this.justCalculated = false;
+                break;
+            }
             case "M+": this.memory += value; break;
             case "M-": this.memory -= value; break;
             case "MC": this.memory = 0; break;
