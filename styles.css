@@ -143,6 +143,12 @@ body {
     color: var(--muted);
 }
 
+.mode-row button.active-mode {
+    color: white;
+    background: var(--primary);
+    border-radius: var(--radius);
+}
+
 /* Memory */
 .memory-row {
     display: flex;

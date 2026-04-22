@@ -30,11 +30,28 @@ const trigDropdownContent = document.getElementById("trig-dropdown-content");
 const funcDropdownBtn = document.getElementById("func-dropdown-btn");
 const funcDropdownContent = document.getElementById("func-dropdown-content");
 
+const modeBtn = document.getElementById("mode-btn");
+const feBtn = document.getElementById("fe-btn");
+
 calculator.updateHistoryPanel();
 
 // Make display focusable
 display.contentEditable = false;
 display.tabIndex = 0;
+
+modeBtn.addEventListener("click", () => {
+    const isDeg = calculator.mode === "DEG";
+
+    calculator.mode = isDeg ? "RAD" : "DEG";
+    modeBtn.textContent = calculator.mode;
+
+    modeBtn.classList.toggle("active-mode", calculator.mode === "RAD");
+});
+
+feBtn.addEventListener("click", () => {
+    calculator.toggleExponential();
+    feBtn.classList.toggle("active-mode", calculator.isExponential);
+});
 
 // History toggle
 historyToggleBtn.addEventListener("click", () => {
@@ -110,6 +127,7 @@ document.body.addEventListener("click", (e) => {
 
     if (btn.id === "historyToggle" || btn.id === "clearHistory") return;
     if (btn.id === "outer-2nd-btn" || btn.id === "trig-2nd-btn") return;
+    if (btn.dataset.type === "mode") return;
     if (btn.classList.contains("dropdown-btn")) return;
 
     let value = btn.innerText;
@@ -119,7 +137,10 @@ document.body.addEventListener("click", (e) => {
         display.focus();
     } else if (value === "C") {
         calculator.clear();
-    } else if (btn.getAttribute("aria-label") === "Backspace") {
+    } else if (value === "MS" || value === "MR" || value === "M+" || value === "M-" || value === "MC") {
+        calculator.handleMemory(value);
+    }
+    else if (btn.getAttribute("aria-label") === "Backspace") {
         calculator.delete();
 
     } else if (btn.id === "square-btn") {

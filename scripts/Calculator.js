@@ -11,6 +11,14 @@ export class Calculator {
         this.history = new History();
         this.justCalculated = false;
         this.hasError = false;
+        this.memory = 0;
+        this.mode = "DEG";
+        this.isExponential = false;
+    }
+
+    getCurrentValue() {
+        const text = this.display.textContent || "0";
+        return parseFloat(text) || 0;
     }
 
     updateDisplay(text) {
@@ -35,6 +43,34 @@ export class Calculator {
         return false;
     }
 
+    handleMemory(type) {
+        if (this.hasError) return;
+        const value = this.getCurrentValue();
+
+        switch (type) {
+            case "MS": this.memory = value; break;
+            case "MR": {
+                const memValue = this.formatResult(this.memory);
+                const current = this.display.textContent;
+                const lastChar = current[current.length - 1];
+
+                if (this.justCalculated || current === "0") {
+                    this.updateDisplay(memValue);
+                } else if (/[+\-×÷%^(]/.test(lastChar)) {
+                    this.updateDisplay(current + memValue);
+                } else {
+                    this.updateDisplay(memValue);
+                }
+
+                this.justCalculated = false;
+                break;
+            }
+            case "M+": this.memory += value; break;
+            case "M-": this.memory -= value; break;
+            case "MC": this.memory = 0; break;
+        }
+    }
+
     append(value) {
         if (this.hasError) {
             this.clearIfError();
@@ -54,7 +90,7 @@ export class Calculator {
 
         let currentText = this.display.textContent;
         const lastChar = currentText[currentText.length - 1];
-        const operatorLike = new Set(["+", "-", "×", "÷", "%", "!", "^", "π", "e"]);
+        const operatorLike = new Set(["+", "-", "×", "÷", "%", "!", "^"]);
 
         // Prevent consecutive tokens 
         if (operatorLike.has(value) && operatorLike.has(lastChar)) {
@@ -75,6 +111,12 @@ export class Calculator {
             if (lastChar === ".") {
                 return;
             }
+        }
+
+        if ((lastChar === "π" || lastChar === "e") && /[0-9(]/.test(value)) {
+            this.updateDisplay(currentText + "×" + value);
+            this.justCalculated = false;
+            return;
         }
 
         if (this.justCalculated && this.isStartOfNewEntry(value)) {
@@ -117,7 +159,10 @@ export class Calculator {
         const num = parseFloat(value);
         if (isNaN(num)) return value;
 
-        // Check if it's an integer or very close to one
+        if (this.isExponential) {
+            return num.toExponential(6);
+        }
+
         if (Number.isInteger(num)) {
             return num.toString();
         }
@@ -128,7 +173,7 @@ export class Calculator {
 
     evaluateCurrentExpression() {
         let input = this.display.textContent.trim();
-        const result = this.expression.evaluate(input);
+        const result = this.expression.evaluate(input, this.mode);
         if (isNaN(result) || !isFinite(result)) {
             throw new Error("Invalid result");
         }
@@ -140,7 +185,7 @@ export class Calculator {
 
         try {
             let input = this.display.textContent.trim();
-            const result = this.expression.evaluate(input);
+            const result = this.expression.evaluate(input, this.mode);
 
             if (isNaN(result) || !isFinite(result)) {
                 this.updateDisplay(result === Infinity || result === -Infinity ? "Infinite" : "Invalid expression");
@@ -213,7 +258,7 @@ export class Calculator {
 
         const expr = this.display.textContent;
         const lastChar = expr[expr.length - 1];
-        const isPostfix = format.startsWith("%s"); 
+        const isPostfix = format.startsWith("%s");
 
         if (isPostfix) {
             // Postfix ops (!, ^, x², x³) require an operand
@@ -249,6 +294,15 @@ export class Calculator {
 
         this.updateDisplay(expr + suffix);
         this.justCalculated = false;
+    }
+
+    toggleExponential() {
+        this.isExponential = !this.isExponential;
+
+        if (this.justCalculated) {
+            const value = this.getCurrentValue();
+            this.updateDisplay(this.formatResult(value));
+        }
     }
 
     applySquare() {
@@ -308,14 +362,6 @@ export class Calculator {
 
     applyTwoPower() {
         this.applyUnaryFunction("2^(%s)");
-    }
-
-    toRadians(deg) {
-        return deg * (Math.PI / 180);
-    }
-
-    toDegrees(rad) {
-        return rad * (180 / Math.PI);
     }
 
     applySin() {
